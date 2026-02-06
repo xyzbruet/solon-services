@@ -1,18 +1,21 @@
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const fs = require('fs').promises;
 const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_FILE = path.join(__dirname, '../data/services.json');
+const DATA_FILE = path.join(__dirname, 'data', 'services.json');
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.json());
+app.use(express.static('public'));
+
+// Serve static files
+app.use('/css', express.static(path.join(__dirname, 'css')));
+app.use('/js', express.static(path.join(__dirname, 'js')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // Helper function to read data
 async function readData() {
@@ -20,7 +23,7 @@ async function readData() {
         const data = await fs.readFile(DATA_FILE, 'utf8');
         return JSON.parse(data);
     } catch (error) {
-        console.error('Error reading data:', error);
+        console.error('Error reading data file:', error);
         return { services: [], loyaltyCards: [] };
     }
 }
@@ -28,187 +31,201 @@ async function readData() {
 // Helper function to write data
 async function writeData(data) {
     try {
-        await fs.writeFile(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
+        await fs.writeFile(DATA_FILE, JSON.stringify(data, null, 2));
         return true;
     } catch (error) {
-        console.error('Error writing data:', error);
+        console.error('Error writing data file:', error);
         return false;
     }
 }
 
-// ==================== SERVICE ENDPOINTS ====================
+// ==================== SERVICE ROUTES ====================
 
-// GET all services
+// Get all services
 app.get('/api/services', async (req, res) => {
     try {
         const data = await readData();
-        const { gender, category, subcategory, popular } = req.query;
-        
-        let filteredServices = data.services;
-        
-        if (gender) {
-            filteredServices = filteredServices.filter(s => s.gender === gender);
-        }
-        if (category) {
-            filteredServices = filteredServices.filter(s => s.category === category);
-        }
-        if (subcategory) {
-            filteredServices = filteredServices.filter(s => s.subcategory === subcategory);
-        }
-        if (popular === 'true') {
-            filteredServices = filteredServices.filter(s => s.popular === true);
-        }
-        
         res.json({
             success: true,
-            count: filteredServices.length,
-            data: filteredServices
+            data: data.services
         });
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch services'
+        });
     }
 });
 
-// GET single service by ID
+// Get service by ID
 app.get('/api/services/:id', async (req, res) => {
     try {
         const data = await readData();
         const service = data.services.find(s => s.id === parseInt(req.params.id));
         
-        if (!service) {
-            return res.status(404).json({ success: false, error: 'Service not found' });
+        if (service) {
+            res.json({
+                success: true,
+                data: service
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                error: 'Service not found'
+            });
         }
-        
-        res.json({ success: true, data: service });
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch service'
+        });
     }
 });
 
-// POST create new service
+// Create new service
 app.post('/api/services', async (req, res) => {
     try {
         const data = await readData();
-        
-        // Generate new ID
-        const newId = data.services.length > 0 
-            ? Math.max(...data.services.map(s => s.id)) + 1 
-            : 1;
-        
         const newService = {
-            id: newId,
-            name: req.body.name,
-            category: req.body.category,
-            subcategory: req.body.subcategory,
-            gender: req.body.gender,
-            description: req.body.description,
-            price: parseFloat(req.body.price),
-            duration: req.body.duration,
-            image: req.body.image || 'images/default.jpg',
-            popular: req.body.popular || false
+            id: Date.now(),
+            ...req.body
         };
         
         data.services.push(newService);
         await writeData(data);
         
-        res.status(201).json({ 
-            success: true, 
-            message: 'Service created successfully',
-            data: newService 
+        res.status(201).json({
+            success: true,
+            data: newService
         });
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        res.status(500).json({
+            success: false,
+            error: 'Failed to create service'
+        });
     }
 });
 
-// PUT update service
+// Update service
 app.put('/api/services/:id', async (req, res) => {
     try {
         const data = await readData();
         const index = data.services.findIndex(s => s.id === parseInt(req.params.id));
         
-        if (index === -1) {
-            return res.status(404).json({ success: false, error: 'Service not found' });
+        if (index !== -1) {
+            data.services[index] = {
+                ...data.services[index],
+                ...req.body,
+                id: parseInt(req.params.id)
+            };
+            
+            await writeData(data);
+            
+            res.json({
+                success: true,
+                data: data.services[index]
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                error: 'Service not found'
+            });
         }
-        
-        data.services[index] = {
-            ...data.services[index],
-            ...req.body,
-            id: parseInt(req.params.id) // Ensure ID doesn't change
-        };
-        
-        await writeData(data);
-        
-        res.json({ 
-            success: true, 
-            message: 'Service updated successfully',
-            data: data.services[index]
-        });
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        res.status(500).json({
+            success: false,
+            error: 'Failed to update service'
+        });
     }
 });
 
-// DELETE service
+// Delete service
 app.delete('/api/services/:id', async (req, res) => {
     try {
         const data = await readData();
-        const initialLength = data.services.length;
-        data.services = data.services.filter(s => s.id !== parseInt(req.params.id));
+        const index = data.services.findIndex(s => s.id === parseInt(req.params.id));
         
-        if (data.services.length === initialLength) {
-            return res.status(404).json({ success: false, error: 'Service not found' });
+        if (index !== -1) {
+            data.services.splice(index, 1);
+            await writeData(data);
+            
+            res.json({
+                success: true,
+                message: 'Service deleted successfully'
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                error: 'Service not found'
+            });
         }
-        
-        await writeData(data);
-        
-        res.json({ 
-            success: true, 
-            message: 'Service deleted successfully'
-        });
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        res.status(500).json({
+            success: false,
+            error: 'Failed to delete service'
+        });
     }
 });
 
-// ==================== LOYALTY CARD ENDPOINTS ====================
+// ==================== LOYALTY CARD ROUTES ====================
 
-// GET all loyalty cards
+// Get all loyalty cards
 app.get('/api/loyalty-cards', async (req, res) => {
     try {
         const data = await readData();
-        res.json({ success: true, data: data.loyaltyCards || [] });
+        res.json({
+            success: true,
+            data: data.loyaltyCards
+        });
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch loyalty cards'
+        });
     }
 });
 
-// GET loyalty card by email
+// Get loyalty card by email
 app.get('/api/loyalty-cards/:email', async (req, res) => {
     try {
         const data = await readData();
-        const card = data.loyaltyCards.find(c => c.email === req.params.email);
+        const card = data.loyaltyCards.find(
+            c => c.email.toLowerCase() === req.params.email.toLowerCase()
+        );
         
-        if (!card) {
-            return res.status(404).json({ success: false, error: 'Loyalty card not found' });
+        if (card) {
+            res.json({
+                success: true,
+                data: card
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                error: 'Loyalty card not found'
+            });
         }
-        
-        res.json({ success: true, data: card });
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch loyalty card'
+        });
     }
 });
 
-// POST create loyalty card
+// Create new loyalty card
 app.post('/api/loyalty-cards', async (req, res) => {
     try {
         const data = await readData();
         
-        // Check if email already exists
-        if (data.loyaltyCards.find(c => c.email === req.body.email)) {
-            return res.status(400).json({ 
-                success: false, 
-                error: 'Loyalty card already exists for this email' 
+        // Check if card already exists
+        const existingCard = data.loyaltyCards.find(
+            c => c.email.toLowerCase() === req.body.email.toLowerCase()
+        );
+        
+        if (existingCard) {
+            return res.status(400).json({
+                success: false,
+                error: 'A loyalty card with this email already exists'
             });
         }
         
@@ -224,135 +241,73 @@ app.post('/api/loyalty-cards', async (req, res) => {
             tier: 'Bronze'
         };
         
-        if (!data.loyaltyCards) {
-            data.loyaltyCards = [];
-        }
-        
         data.loyaltyCards.push(newCard);
         await writeData(data);
         
-        res.status(201).json({ 
-            success: true, 
-            message: 'Loyalty card created successfully',
-            data: newCard 
+        res.status(201).json({
+            success: true,
+            data: newCard
         });
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        res.status(500).json({
+            success: false,
+            error: 'Failed to create loyalty card'
+        });
     }
 });
 
-// PUT update loyalty card (add points/visits)
-app.put('/api/loyalty-cards/:email', async (req, res) => {
+// Update loyalty card
+app.put('/api/loyalty-cards/:id', async (req, res) => {
     try {
         const data = await readData();
-        const index = data.loyaltyCards.findIndex(c => c.email === req.params.email);
+        const index = data.loyaltyCards.findIndex(c => c.id === parseInt(req.params.id));
         
-        if (index === -1) {
-            return res.status(404).json({ success: false, error: 'Loyalty card not found' });
-        }
-        
-        const card = data.loyaltyCards[index];
-        
-        if (req.body.addPoints) {
-            card.points += parseInt(req.body.addPoints);
-        }
-        if (req.body.addVisits) {
-            card.visits += parseInt(req.body.addVisits);
-        }
-        if (req.body.addSpent) {
-            card.totalSpent += parseFloat(req.body.addSpent);
-        }
-        
-        // Update tier based on points
-        if (card.points >= 1000) {
-            card.tier = 'Platinum';
-        } else if (card.points >= 500) {
-            card.tier = 'Gold';
-        } else if (card.points >= 200) {
-            card.tier = 'Silver';
+        if (index !== -1) {
+            data.loyaltyCards[index] = {
+                ...data.loyaltyCards[index],
+                ...req.body,
+                id: parseInt(req.params.id)
+            };
+            
+            await writeData(data);
+            
+            res.json({
+                success: true,
+                data: data.loyaltyCards[index]
+            });
         } else {
-            card.tier = 'Bronze';
+            res.status(404).json({
+                success: false,
+                error: 'Loyalty card not found'
+            });
         }
-        
-        card.lastUpdated = new Date().toISOString();
-        
-        await writeData(data);
-        
-        res.json({ 
-            success: true, 
-            message: 'Loyalty card updated successfully',
-            data: card
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: 'Failed to update loyalty card'
         });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// ==================== CATEGORY ENDPOINTS ====================
-
-// GET all categories
-app.get('/api/categories', async (req, res) => {
-    try {
-        const data = await readData();
-        const { gender } = req.query;
-        
-        let services = data.services;
-        if (gender) {
-            services = services.filter(s => s.gender === gender);
-        }
-        
-        const categories = [...new Set(services.map(s => s.category))];
-        
-        res.json({ success: true, data: categories });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-// GET subcategories by category
-app.get('/api/categories/:category/subcategories', async (req, res) => {
-    try {
-        const data = await readData();
-        const { gender } = req.query;
-        
-        let services = data.services.filter(s => s.category === req.params.category);
-        
-        if (gender) {
-            services = services.filter(s => s.gender === gender);
-        }
-        
-        const subcategories = [...new Set(services.map(s => s.subcategory))];
-        
-        res.json({ success: true, data: subcategories });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-// Root endpoint
+// ==================== SERVE HTML FILES ====================
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ 
-        success: false, 
-        error: 'Something went wrong!' 
-    });
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-// Start server
+// ==================== START SERVER ====================
 app.listen(PORT, () => {
     console.log(`
-    ╔════════════════════════════════════════╗
-    ║   Salon Services API Server Running   ║
-    ╠════════════════════════════════════════╣
-    ║   Port: ${PORT}                         ║
-    ║   Environment: ${process.env.NODE_ENV || 'development'}              ║
-    ║   API Base: http://localhost:${PORT}/api ║
-    ╚════════════════════════════════════════╝
+╔═══════════════════════════════════════════════╗
+║        Luxe Salon Server Running             ║
+╠═══════════════════════════════════════════════╣
+║  Port: ${PORT}                                    ║
+║  URL:  http://localhost:${PORT}                  ║
+║  Admin: http://localhost:${PORT}/admin           ║
+╚═══════════════════════════════════════════════╝
     `);
 });
 

@@ -14,7 +14,6 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -38,9 +37,6 @@
                         <a class="nav-link" href="#services">Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#loyalty">Loyalty Card</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="admin.html">
                             <i class="fas fa-user-shield"></i> Admin
                         </a>
@@ -52,22 +48,18 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero-section">
-        <div class="hero-overlay"></div>
         <div class="container">
             <div class="row align-items-center min-vh-100">
                 <div class="col-lg-8 mx-auto text-center hero-content">
-                    <h1 class="hero-title" data-aos="fade-up">
+                    <h1 class="hero-title">
                         Experience True <span class="text-gradient">Luxury</span>
                     </h1>
-                    <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="100">
+                    <p class="hero-subtitle">
                         Where Beauty Meets Perfection
                     </p>
-                    <div class="hero-buttons" data-aos="fade-up" data-aos-delay="200">
+                    <div class="hero-buttons">
                         <a href="#services" class="btn btn-primary btn-lg me-3">
                             <i class="fas fa-cut me-2"></i>Explore Services
-                        </a>
-                        <a href="#loyalty" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-star me-2"></i>Join Loyalty Program
                         </a>
                     </div>
                 </div>
@@ -78,235 +70,324 @@
         </div>
     </section>
 
-    <!-- Services Section -->
+    <!-- Services Section with Tabs -->
     <section id="services" class="services-section py-5">
-        <div class="container-fluid">
+        <div class="container">
             <!-- Section Header -->
             <div class="row mb-5">
                 <div class="col-lg-8 mx-auto text-center">
                     <h2 class="section-title">Our Premium Services</h2>
-                    <p class="section-subtitle">Discover our comprehensive range of beauty and grooming services</p>
+                    <p class="section-subtitle">Choose your category and explore our exclusive services</p>
                 </div>
             </div>
 
-            <div class="row">
-                <!-- Sidebar -->
-                <div class="col-lg-3 col-md-4 mb-4">
-                    <div class="service-sidebar sticky-top">
-                        <!-- Gender Selection -->
-                        <div class="sidebar-section">
-                            <h5 class="sidebar-title">
-                                <i class="fas fa-venus-mars me-2"></i>Select Gender
-                            </h5>
-                            <ul class="nav nav-pills flex-column gender-tabs" id="genderTabs" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="women-tab" data-bs-toggle="pill" 
-                                            data-gender="women" type="button" role="tab">
-                                        <i class="fas fa-female me-2"></i>Women's Services
+            <!-- Main Service Tabs -->
+            <div class="service-tabs-container">
+                <ul class="nav nav-pills service-main-tabs justify-content-center mb-5" id="mainServiceTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="ladies-tab" data-bs-toggle="pill" 
+                                data-bs-target="#ladies" type="button" role="tab">
+                            <i class="fas fa-female me-2"></i>
+                            <span>Ladies Services</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="gents-tab" data-bs-toggle="pill" 
+                                data-bs-target="#gents" type="button" role="tab">
+                            <i class="fas fa-male me-2"></i>
+                            <span>Gents Services</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="loyalty-tab" data-bs-toggle="pill" 
+                                data-bs-target="#loyalty" type="button" role="tab">
+                            <i class="fas fa-crown me-2"></i>
+                            <span>Loyalty Card</span>
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="mainServiceTabContent">
+                    
+                    <!-- Ladies Services Tab -->
+                    <div class="tab-pane fade show active" id="ladies" role="tabpanel">
+                        <div class="category-accordion">
+                            <!-- Hair Services -->
+                            <div class="accordion-item category-card">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                                            data-bs-target="#ladiesHair">
+                                        <i class="fas fa-cut category-icon"></i>
+                                        <span class="category-title">Hair Services</span>
+                                        <span class="service-count badge">0</span>
                                     </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="men-tab" data-bs-toggle="pill" 
-                                            data-gender="men" type="button" role="tab">
-                                        <i class="fas fa-male me-2"></i>Men's Services
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Category Filter -->
-                        <div class="sidebar-section">
-                            <h5 class="sidebar-title">
-                                <i class="fas fa-filter me-2"></i>Categories
-                            </h5>
-                            <div class="list-group category-list">
-                                <a href="#" class="list-group-item list-group-item-action active" data-category="all">
-                                    <i class="fas fa-th-large me-2"></i>All Services
-                                    <span class="badge bg-primary rounded-pill float-end" id="count-all">0</span>
-                                </a>
-                                <a href="#" class="list-group-item list-group-item-action" data-category="hair">
-                                    <i class="fas fa-cut me-2"></i>Hair Services
-                                    <span class="badge bg-primary rounded-pill float-end" id="count-hair">0</span>
-                                </a>
-                                <a href="#" class="list-group-item list-group-item-action" data-category="skin">
-                                    <i class="fas fa-spa me-2"></i>Skin Care
-                                    <span class="badge bg-primary rounded-pill float-end" id="count-skin">0</span>
-                                </a>
-                                <a href="#" class="list-group-item list-group-item-action" data-category="makeup">
-                                    <i class="fas fa-palette me-2"></i>Makeup
-                                    <span class="badge bg-primary rounded-pill float-end" id="count-makeup">0</span>
-                                </a>
-                                <a href="#" class="list-group-item list-group-item-action" data-category="hands-feet">
-                                    <i class="fas fa-hand-sparkles me-2"></i>Hands & Feet
-                                    <span class="badge bg-primary rounded-pill float-end" id="count-hands-feet">0</span>
-                                </a>
-                                <a href="#" class="list-group-item list-group-item-action" data-category="grooming">
-                                    <i class="fas fa-user-tie me-2"></i>Grooming
-                                    <span class="badge bg-primary rounded-pill float-end" id="count-grooming">0</span>
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Popular Services Toggle -->
-                        <div class="sidebar-section">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="popularOnlyToggle">
-                                <label class="form-check-label" for="popularOnlyToggle">
-                                    <i class="fas fa-star text-warning me-1"></i>Popular Only
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Services Grid -->
-                <div class="col-lg-9 col-md-8">
-                    <!-- Loading Spinner -->
-                    <div id="loadingSpinner" class="text-center py-5">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-3">Loading services...</p>
-                    </div>
-
-                    <!-- Services Container -->
-                    <div id="servicesContainer" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" style="display: none;">
-                        <!-- Services will be dynamically loaded here -->
-                    </div>
-
-                    <!-- No Results Message -->
-                    <div id="noResults" class="text-center py-5" style="display: none;">
-                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                        <h4>No services found</h4>
-                        <p class="text-muted">Try adjusting your filters</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Loyalty Card Section -->
-    <section id="loyalty" class="loyalty-section py-5">
-        <div class="container">
-            <div class="row mb-5">
-                <div class="col-lg-8 mx-auto text-center">
-                    <h2 class="section-title">Loyalty Rewards Program</h2>
-                    <p class="section-subtitle">Earn points with every visit and unlock exclusive benefits</p>
-                </div>
-            </div>
-
-            <div class="row">
-                <!-- Loyalty Tiers -->
-                <div class="col-lg-8 mx-auto mb-5">
-                    <div class="row g-4">
-                        <div class="col-md-3">
-                            <div class="tier-card bronze-tier">
-                                <div class="tier-icon">
-                                    <i class="fas fa-medal"></i>
-                                </div>
-                                <h5>Bronze</h5>
-                                <p class="tier-points">0-199 pts</p>
-                                <p class="tier-benefit">5% Discount</p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="tier-card silver-tier">
-                                <div class="tier-icon">
-                                    <i class="fas fa-medal"></i>
-                                </div>
-                                <h5>Silver</h5>
-                                <p class="tier-points">200-499 pts</p>
-                                <p class="tier-benefit">10% Discount</p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="tier-card gold-tier">
-                                <div class="tier-icon">
-                                    <i class="fas fa-medal"></i>
-                                </div>
-                                <h5>Gold</h5>
-                                <p class="tier-points">500-999 pts</p>
-                                <p class="tier-benefit">15% Discount</p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="tier-card platinum-tier">
-                                <div class="tier-icon">
-                                    <i class="fas fa-crown"></i>
-                                </div>
-                                <h5>Platinum</h5>
-                                <p class="tier-points">1000+ pts</p>
-                                <p class="tier-benefit">20% Discount</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Loyalty Card Actions -->
-                <div class="col-lg-6 mx-auto">
-                    <div class="card loyalty-card-form">
-                        <div class="card-body">
-                            <ul class="nav nav-tabs mb-4" id="loyaltyTabs" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="check-card-tab" data-bs-toggle="tab" 
-                                            data-bs-target="#check-card" type="button" role="tab">
-                                        <i class="fas fa-search me-2"></i>Check Card
-                                    </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="new-card-tab" data-bs-toggle="tab" 
-                                            data-bs-target="#new-card" type="button" role="tab">
-                                        <i class="fas fa-plus me-2"></i>New Card
-                                    </button>
-                                </li>
-                            </ul>
-
-                            <div class="tab-content" id="loyaltyTabContent">
-                                <!-- Check Card Tab -->
-                                <div class="tab-pane fade show active" id="check-card" role="tabpanel">
-                                    <form id="checkCardForm">
-                                        <div class="mb-3">
-                                            <label for="checkEmail" class="form-label">Email Address</label>
-                                            <input type="email" class="form-control" id="checkEmail" required 
-                                                   placeholder="Enter your email">
+                                </h2>
+                                <div id="ladiesHair" class="accordion-collapse collapse show">
+                                    <div class="accordion-body">
+                                        <div class="row g-4" data-category="hair" data-gender="women">
+                                            <!-- Services will be loaded here -->
                                         </div>
-                                        <button type="submit" class="btn btn-primary w-100">
-                                            <i class="fas fa-search me-2"></i>Check My Card
-                                        </button>
-                                    </form>
-
-                                    <!-- Card Display -->
-                                    <div id="cardDisplay" class="mt-4" style="display: none;">
-                                        <!-- Card details will be displayed here -->
                                     </div>
                                 </div>
+                            </div>
 
-                                <!-- New Card Tab -->
-                                <div class="tab-pane fade" id="new-card" role="tabpanel">
-                                    <form id="newCardForm">
-                                        <div class="mb-3">
-                                            <label for="newName" class="form-label">Full Name</label>
-                                            <input type="text" class="form-control" id="newName" required 
-                                                   placeholder="Enter your name">
+                            <!-- Makeup Services -->
+                            <div class="accordion-item category-card">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                            data-bs-target="#ladiesMakeup">
+                                        <i class="fas fa-palette category-icon"></i>
+                                        <span class="category-title">Makeup Services</span>
+                                        <span class="service-count badge">0</span>
+                                    </button>
+                                </h2>
+                                <div id="ladiesMakeup" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <div class="row g-4" data-category="makeup" data-gender="women">
+                                            <!-- Services will be loaded here -->
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="newEmail" class="form-label">Email Address</label>
-                                            <input type="email" class="form-control" id="newEmail" required 
-                                                   placeholder="Enter your email">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Skin Care -->
+                            <div class="accordion-item category-card">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                            data-bs-target="#ladiesSkin">
+                                        <i class="fas fa-spa category-icon"></i>
+                                        <span class="category-title">Skin Care</span>
+                                        <span class="service-count badge">0</span>
+                                    </button>
+                                </h2>
+                                <div id="ladiesSkin" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <div class="row g-4" data-category="skin" data-gender="women">
+                                            <!-- Services will be loaded here -->
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="newPhone" class="form-label">Phone Number</label>
-                                            <input type="tel" class="form-control" id="newPhone" required 
-                                                   placeholder="Enter your phone">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Hands & Feet -->
+                            <div class="accordion-item category-card">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                            data-bs-target="#ladiesHandsFeet">
+                                        <i class="fas fa-hand-sparkles category-icon"></i>
+                                        <span class="category-title">Hands & Feet</span>
+                                        <span class="service-count badge">0</span>
+                                    </button>
+                                </h2>
+                                <div id="ladiesHandsFeet" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <div class="row g-4" data-category="hands-feet" data-gender="women">
+                                            <!-- Services will be loaded here -->
                                         </div>
-                                        <button type="submit" class="btn btn-success w-100">
-                                            <i class="fas fa-plus me-2"></i>Create Loyalty Card
-                                        </button>
-                                    </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Gents Services Tab -->
+                    <div class="tab-pane fade" id="gents" role="tabpanel">
+                        <div class="category-accordion">
+                            <!-- Hair Services -->
+                            <div class="accordion-item category-card">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                                            data-bs-target="#gentsHair">
+                                        <i class="fas fa-cut category-icon"></i>
+                                        <span class="category-title">Hair Services</span>
+                                        <span class="service-count badge">0</span>
+                                    </button>
+                                </h2>
+                                <div id="gentsHair" class="accordion-collapse collapse show">
+                                    <div class="accordion-body">
+                                        <div class="row g-4" data-category="hair" data-gender="men">
+                                            <!-- Services will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Grooming Services -->
+                            <div class="accordion-item category-card">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                            data-bs-target="#gentsGrooming">
+                                        <i class="fas fa-user-tie category-icon"></i>
+                                        <span class="category-title">Grooming Services</span>
+                                        <span class="service-count badge">0</span>
+                                    </button>
+                                </h2>
+                                <div id="gentsGrooming" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <div class="row g-4" data-category="grooming" data-gender="men">
+                                            <!-- Services will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Skin Care -->
+                            <div class="accordion-item category-card">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                            data-bs-target="#gentsSkin">
+                                        <i class="fas fa-spa category-icon"></i>
+                                        <span class="category-title">Skin Care</span>
+                                        <span class="service-count badge">0</span>
+                                    </button>
+                                </h2>
+                                <div id="gentsSkin" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <div class="row g-4" data-category="skin" data-gender="men">
+                                            <!-- Services will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Hands & Feet -->
+                            <div class="accordion-item category-card">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                            data-bs-target="#gentsHandsFeet">
+                                        <i class="fas fa-hand-sparkles category-icon"></i>
+                                        <span class="category-title">Hands & Feet</span>
+                                        <span class="service-count badge">0</span>
+                                    </button>
+                                </h2>
+                                <div id="gentsHandsFeet" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <div class="row g-4" data-category="hands-feet" data-gender="men">
+                                            <!-- Services will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loyalty Card Tab -->
+                    <div class="tab-pane fade" id="loyalty" role="tabpanel">
+                        <div class="row">
+                            <!-- Loyalty Tiers -->
+                            <div class="col-12 mb-5">
+                                <div class="row g-4">
+                                    <div class="col-md-3">
+                                        <div class="tier-card bronze-tier">
+                                            <div class="tier-icon">
+                                                <i class="fas fa-medal"></i>
+                                            </div>
+                                            <h5>Bronze</h5>
+                                            <p class="tier-points">0-199 pts</p>
+                                            <p class="tier-benefit">5% Discount</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="tier-card silver-tier">
+                                            <div class="tier-icon">
+                                                <i class="fas fa-medal"></i>
+                                            </div>
+                                            <h5>Silver</h5>
+                                            <p class="tier-points">200-499 pts</p>
+                                            <p class="tier-benefit">10% Discount</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="tier-card gold-tier">
+                                            <div class="tier-icon">
+                                                <i class="fas fa-medal"></i>
+                                            </div>
+                                            <h5>Gold</h5>
+                                            <p class="tier-points">500-999 pts</p>
+                                            <p class="tier-benefit">15% Discount</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="tier-card platinum-tier">
+                                            <div class="tier-icon">
+                                                <i class="fas fa-crown"></i>
+                                            </div>
+                                            <h5>Platinum</h5>
+                                            <p class="tier-points">1000+ pts</p>
+                                            <p class="tier-benefit">20% Discount</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Loyalty Card Actions -->
+                            <div class="col-lg-6 mx-auto">
+                                <div class="card loyalty-card-form">
+                                    <div class="card-body">
+                                        <ul class="nav nav-tabs mb-4" id="loyaltyTabs" role="tablist">
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link active" id="check-card-tab" data-bs-toggle="tab" 
+                                                        data-bs-target="#check-card" type="button" role="tab">
+                                                    <i class="fas fa-search me-2"></i>Check Card
+                                                </button>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link" id="new-card-tab" data-bs-toggle="tab" 
+                                                        data-bs-target="#new-card" type="button" role="tab">
+                                                    <i class="fas fa-plus me-2"></i>New Card
+                                                </button>
+                                            </li>
+                                        </ul>
+
+                                        <div class="tab-content" id="loyaltyTabContent">
+                                            <!-- Check Card Tab -->
+                                            <div class="tab-pane fade show active" id="check-card" role="tabpanel">
+                                                <form id="checkCardForm">
+                                                    <div class="mb-3">
+                                                        <label for="checkEmail" class="form-label">Email Address</label>
+                                                        <input type="email" class="form-control" id="checkEmail" required 
+                                                               placeholder="Enter your email">
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary w-100">
+                                                        <i class="fas fa-search me-2"></i>Check My Card
+                                                    </button>
+                                                </form>
+
+                                                <!-- Card Display -->
+                                                <div id="cardDisplay" class="mt-4" style="display: none;"></div>
+                                            </div>
+
+                                            <!-- New Card Tab -->
+                                            <div class="tab-pane fade" id="new-card" role="tabpanel">
+                                                <form id="newCardForm">
+                                                    <div class="mb-3">
+                                                        <label for="newName" class="form-label">Full Name</label>
+                                                        <input type="text" class="form-control" id="newName" required 
+                                                               placeholder="Enter your name">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="newEmail" class="form-label">Email Address</label>
+                                                        <input type="email" class="form-control" id="newEmail" required 
+                                                               placeholder="Enter your email">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="newPhone" class="form-label">Phone Number</label>
+                                                        <input type="tel" class="form-control" id="newPhone" required 
+                                                               placeholder="Enter your phone">
+                                                    </div>
+                                                    <button type="submit" class="btn btn-success w-100">
+                                                        <i class="fas fa-plus me-2"></i>Create Loyalty Card
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -325,7 +406,6 @@
                     <ul class="list-unstyled">
                         <li><a href="#home">Home</a></li>
                         <li><a href="#services">Services</a></li>
-                        <li><a href="#loyalty">Loyalty Program</a></li>
                         <li><a href="admin.html">Admin Panel</a></li>
                     </ul>
                 </div>
@@ -351,7 +431,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalServiceName"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
